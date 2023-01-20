@@ -297,6 +297,17 @@ class blanketProfileReq(http.Controller):
                 return request.redirect("/product_stock_problem")
         else:
             return request.redirect("/stokyok")
+    
+    @http.route(['/shop/confirm-order/<order_id>'], type='http', auth="public", methods=["GET"], cors='*', website=True)
+    def confirm_order(self,order_id):
+        _logger.info("order_id===================" + str(order_id))
+        order = http.request.env['sale.order'].sudo().search([['id','=', int(order_id)]])
+        if len(order) == 1:
+            order.sudo().write({
+            'state': "sent"
+        })
+        return request.redirect("/my/quotes?status=1")
+
 
     # @http.route(['/create/report-for-blanket'], type="json", auth="public", methods=["POST"], csrf=False)
     # def create_blanket_req_1(self, **kw):
